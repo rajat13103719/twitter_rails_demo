@@ -3,7 +3,7 @@ class PostsController < ApplicationController
   #before_action :authenticate_user!
   before_action :set_user
   before_action :load_post,  only: [:show,:delete,:edit]
-  before_action :validate_post_owner,  only: [:show,:delete,:edit]
+  before_action :validate_post_owner,  only: [:delete,:edit]
 
   def get_posts
     page_no = (params[:page] || 0 ).to_i

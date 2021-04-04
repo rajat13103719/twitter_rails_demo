@@ -3,7 +3,7 @@ class CommentsController < ApplicationController
   #before_action :authenticate_user!
   before_action :set_user
   before_action :load_comment,  only: [:show,:delete,:edit]
-  before_action :validate_comment_owner,  only: [:show,:delete,:edit]
+  before_action :validate_comment_owner,  only: [:delete,:edit]
 
   
 
