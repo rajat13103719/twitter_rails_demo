@@ -23,7 +23,7 @@ class CommentsController < ApplicationController
     post_id = params[:post_id]
     @post = Post.find_by_id(post_id) unless post_id.blank?
     if @post.blank?
-      render_404 and return
+      render :file => "public/404.html", :status => :not_found and return
     end
     @comment = Comment.new(:user=>@user,:data=>caption,:post=>@post)
     @comment.save!
@@ -45,18 +45,18 @@ class CommentsController < ApplicationController
   
   def set_user
     @user = User.find_by_email(params[:email])
-    render_401 and return unless @user
+    render :file => "public/401.html", :status => :unauthorized and return unless @user
   end
 
   def load_comment
     comment_id = params[:comment_id]
     @comment = Comment.find_by_id(comment_id.to_i) unless comment_id.blank?
-    render_404 and return unless @comment
+    render :file => "public/404.html", :status => :not_found and return unless @comment
   end
 
   def validate_comment_owner
     if @comment.user != @user
-      render_404 and return
+      render :file => "public/401.html", :status => :unauthorized and return
     end  
   end
   

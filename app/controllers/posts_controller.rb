@@ -9,7 +9,7 @@ class PostsController < ApplicationController
     page_no = (params[:page] || 0 ).to_i
     post_type = params[:post] == 'draft' ? 'draft' : 'published'
 
-    posts = params[:post] == 'draft' ? @user.posts.draft.order(created_at: :desc).offset(10*i).limit(10) : @user.posts.published.order(created_at: :desc).offset(10*i).limit(10)
+    posts = params[:post] == 'draft' ? @user.posts.draft.order(created_at: :desc).offset(10*page_no).limit(10) : @user.posts.published.order(created_at: :desc).offset(10*page_no).limit(10)
     data = []
     posts.each{|post|
       data_hash = {}
@@ -28,7 +28,7 @@ class PostsController < ApplicationController
   def show
     page_no = (params[:page] || 0 ).to_i
     
-    comments = @post.comments.order(created_at: :desc).offset(10*i).limit(10)
+    comments = @post.comments.order(created_at: :desc).offset(10*page_no).limit(10)
     likes = @post.likes.order(created_at: :desc).map{|x| x.user.email}
     data = []
     comments.each{|comment|
@@ -72,20 +72,20 @@ class PostsController < ApplicationController
   
   def set_user
     @user = User.find_by_email(params[:email])
-    render_401 and return unless @user
+    render :file => "public/401.html", :status => :unauthorized and return unless @user
   end
 
   def load_post
     post_id = params[:post_id]
     @post = Post.find_by_id(post_id.to_i) unless post_id.blank?
     if @post.blank?
-      render_404 and return
+      render :file => "public/404.html", :status => :not_found and return
     end
   end
 
   def validate_post_owner
     if @post.user != @user
-      render_401 and return
+      render :file => "public/401.html", :status => :unauthorized and return
     end
   end
   

@@ -6,7 +6,7 @@ class LikesController < ApplicationController
   before_action :validate_like_owner,  only: [:delete]
 
   
-  
+
   
 
   def new
@@ -14,7 +14,7 @@ class LikesController < ApplicationController
     likeable_id = params[:likeable_id]
     @likeable = likeable == 'post' ? Post.find_by_id(likeable_id) : Comment.find_by_id(likeable_id)
     if @likeable.blank?
-      render_400 and return
+      render :file => "public/401.html", :status => :unauthorized and return
     end
     @like = Like.where(:likeable=>@likeable,:user=>@user).first
     success = false
@@ -38,18 +38,18 @@ class LikesController < ApplicationController
   
   def set_user
     @user = User.find_by_email(params[:email])
-    render_401 and return unless @user
+    render :file => "public/401.html", :status => :unauthorized and return unless @user
   end
 
   def load_like
     like_id = params[:like_id]
     @like = Like.find_by_id(like_id.to_i) unless like_id.blank?
-    render_404 and return unless @like
+    render :file => "public/404.html", :status => :not_found and return unless @like
   end
 
   def validate_comment_owner
     if @like.user != @user
-      render_401 and return
+      render :file => "public/401.html", :status => :unauthorized and return
     end  
   end
   
